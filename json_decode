@@ -9,12 +9,9 @@ function usage() {
          "       echo [1,2,3] | {$me} -v(var_dump) -p(print_r)\n";
 }
 
-if (!function_exists('json_decdode')) {
-    fwrite(
-        STDERR,
-        "The 'json_decode' function is not defined. " .
-        "Try installing PECL json or using PHP 5.2 or higher.\n"
-    );
+if (!function_exists('json_decode')) {
+    fwrite(STDERR, "The 'json_decode' function is not defined. " .
+        "Try installing PECL json or using PHP 5.2 or higher.\n");
     exit(1);
 } else if (isset($opt['e'])) {
     $json = json_decode($opt['e'], true);
