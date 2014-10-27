@@ -18,7 +18,7 @@ if (!function_exists('json_decode')) {
 } else if (posix_isatty(STDIN) && isset($_SERVER['argv'][1])) {
     $json = json_decode($_SERVER['argv'][1], true);
 } else if (!posix_isatty(STDIN)) {
-    $json = json_decode(fgets(STDIN), true);
+    $json = json_decode(file_get_contents('php://stdin'), true);
 } else {
     usage();
     exit(1);
