@@ -10,6 +10,13 @@ function usage() {
          "       echo [1,2,3] | {$me} -v(var_dump) -p(print_r)\n";
 }
 
+// Stub posix_isatty if missing
+if (!function_exists('posix_isatty')) {
+    function posix_isatty($ig) {
+        return false;
+    }
+}
+
 // Check opts
 if (!function_exists('json_decode')) {
     fwrite(STDERR, "The 'json_decode' function is not defined. " .
