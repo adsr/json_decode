@@ -5,9 +5,17 @@
 $opt = getopt('hvpje:x:');
 function usage() {
     $me = basename($_SERVER['PHP_SELF']);
-    echo "Usage: {$me} -v(var_dump) -p(print_r) -e <json>\n" .
-         "       -or-\n" .
-         "       echo [1,2,3] | {$me} -v(var_dump) -p(print_r)\n";
+    echo "Usage: {$me} [options]\n\n" .
+        "    -h         Show this message\n" .
+        "    -v         var_dump results (default)\n" .
+        "    -p         print_r results\n" .
+        "    -j         json_encode results\n" .
+        "    -e <json>  JSON to evaluate; either this option or stdin is required\n" .
+        "    -x <path>  Dot-notation path to extract\n\n" .
+        "Examples:\n\n" .
+        "    {$me} -e '[1,2,3]'\n" .
+        "    echo [1,2,3] | {$me} -p\n" .
+        '    echo \'{"a":{"b":{"c":["x","y"]}}}\'' . " | {$me} -jx 'a.b.c.1'\n";
 }
 
 // Stub posix_isatty if missing
