@@ -72,7 +72,7 @@ if (isset($opt['x'])) {
     });
     $cur = $json;
     while (($path = array_shift($paths)) !== null) {
-        if (is_array($path) && array_key_exists($path, $cur)) {
+        if (is_array($cur) && array_key_exists($path, $cur)) {
             $cur = $cur[$path];
         } else {
             $cur = null;
