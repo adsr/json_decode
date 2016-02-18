@@ -2,7 +2,7 @@
 <?php
 
 // Define opts and usage
-$opt = getopt('hvpje:x:');
+$opt = getopt('hvpje:x:f:');
 function usage() {
     $me = basename($_SERVER['PHP_SELF']);
     echo "Usage: {$me} [options]\n\n" .
@@ -10,11 +10,13 @@ function usage() {
         "    -v         var_dump results (default)\n" .
         "    -p         print_r results\n" .
         "    -j         json_encode results\n" .
-        "    -e <json>  JSON to evaluate; either this option or stdin is required\n" .
+        "    -e <json>  JSON to evaluate; either this option, -f, or stdin is required\n" .
+        "    -f <file>  File containing JSON to evaluate; either this option, -e, or stdin is required\n" .
         "    -x <path>  Dot-notation path to extract\n\n" .
         "Examples:\n\n" .
         "    {$me} -e '[1,2,3]'\n" .
         "    echo [1,2,3] | {$me} -p\n" .
+        "    {$me} -f test.json -v\n" .
         '    echo \'{"a":{"b":{"c":["x","y"]}}}\'' . " | {$me} -jx 'a.b.c.1'\n";
 }
 
@@ -35,6 +37,13 @@ if (!function_exists('json_decode')) {
     exit(0);
 } else if (isset($opt['e'])) {
     $json = json_decode($opt['e'], true);
+} else if (isset($opt['f'])) {
+    if (is_readable($opt['f'])) {
+        $json = json_decode(file_get_contents($opt['f']), true);
+    } else {
+        fwrite(STDERR, "File {$opt['f']} is not readable.\n");
+        exit(1);
+    }
 } else if (posix_isatty(STDIN) && isset($_SERVER['argv'][1])) {
     $json = json_decode($_SERVER['argv'][1], true);
 } else if (!posix_isatty(STDIN)) {
@@ -87,7 +96,11 @@ if (isset($opt['x'])) {
 if (isset($opt['j'])) {
     echo json_encode($json, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0);
 } else if (isset($opt['p'])) {
-    print_r($json);
+    if (is_scalar($json)) {
+        echo "{$json}\n";
+    } else {
+        print_r($json);
+    }
 } else { // if (isset($opt['v'])) {
     var_dump($json);
 }
